@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
-import { 
-  ArrowLeft, 
-  Download, 
-  Share2, 
-  RefreshCw, 
+import {
+  ArrowLeft,
+  Download,
+  Share2,
+  RefreshCw,
   Home,
   Check,
   X,
@@ -24,12 +24,12 @@ import { createClient } from '@/lib/supabase/client'
 export default function ResultadoPage() {
   const router = useRouter()
   const supabase = createClient()
-  const { 
-    photos, 
-    adjustments, 
-    resultImage, 
-    isProcessing, 
-    setResultImage, 
+  const {
+    photos,
+    adjustments,
+    resultImage,
+    isProcessing,
+    setResultImage,
     setIsProcessing,
     reset,
     addPhoto,
@@ -37,11 +37,11 @@ export default function ResultadoPage() {
     clearAdjustments,
     gender
   } = useSimulationStore()
-  
+
   const [error, setError] = useState<string | null>(null)
   const [isSaving, setIsSaving] = useState(false)
   const [saved, setSaved] = useState(false)
-  
+
   // Progress tracking
   const [progress, setProgress] = useState(0)
   const [progressStage, setProgressStage] = useState<string>('Preparando...')
@@ -80,7 +80,7 @@ export default function ResultadoPage() {
     ]
 
     const timeouts: NodeJS.Timeout[] = []
-    
+
     stages.forEach(({ progress: p, stage, delay }) => {
       const timeout = setTimeout(() => {
         if (isProcessing) {
@@ -109,7 +109,7 @@ export default function ResultadoPage() {
       setError(null)
       setProgress(5)
       setProgressStage('Preparando imagem...')
-      
+
       // Convert photos to base64 URLs
       const imageUrls = photos.map(p => p.dataUrl)
 
@@ -131,7 +131,7 @@ export default function ResultadoPage() {
       }
 
       const data = await response.json()
-      
+
       if (data.images && data.images.length > 0) {
         setProgress(100)
         setProgressStage('Concluído! ✓')
@@ -165,20 +165,8 @@ export default function ResultadoPage() {
         prompt_usado: 'AI Generated',
       } as never)
 
-      // Update remaining simulations - decrement via direct update
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('simulacoes_restantes')
-        .eq('id', user.id)
-        .single()
-      
-      if (profile) {
-        const currentSimulacoes = (profile as { simulacoes_restantes: number }).simulacoes_restantes || 0
-        await supabase
-          .from('profiles')
-          .update({ simulacoes_restantes: Math.max(0, currentSimulacoes - 1) } as never)
-          .eq('id', user.id)
-      }
+      // Update remaining simulations is now handled by the API
+      // to count every generation, not just saved ones.
 
       setSaved(true)
     } catch (err) {
@@ -207,7 +195,7 @@ export default function ResultadoPage() {
   // Continuar editando a foto gerada (usar resultado como nova base)
   const handleContinueEditing = () => {
     if (!resultImage) return
-    
+
     // Salva a foto gerada como a nova foto base
     clearPhotos()
     addPhoto({
@@ -216,11 +204,11 @@ export default function ResultadoPage() {
       type: 'uploaded',
       timestamp: Date.now(),
     })
-    
+
     // Limpa ajustes e resultado para novo processamento
     clearAdjustments()
     setResultImage(null)
-    
+
     router.push('/ajustes')
   }
 
@@ -229,7 +217,7 @@ export default function ResultadoPage() {
     // Mantém a foto original, limpa ajustes e resultado
     clearAdjustments()
     setResultImage(null)
-    
+
     router.push('/ajustes')
   }
 
@@ -245,14 +233,14 @@ export default function ResultadoPage() {
         animate={{ opacity: 1, y: 0 }}
         className="mb-8"
       >
-        <button 
+        <button
           onClick={() => router.push('/ajustes')}
           className="flex items-center gap-2 text-gray-600 hover:text-primary-700 mb-4 transition-colors"
         >
           <ArrowLeft className="w-5 h-5" />
           <span>Voltar aos ajustes</span>
         </button>
-        
+
         <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
           Resultado da Simulação
         </h1>
@@ -310,7 +298,7 @@ export default function ResultadoPage() {
                 <h2 className="text-xl font-bold text-gray-900 mb-2">
                   {progressStage}
                 </h2>
-                
+
                 {/* Progress bar */}
                 <div className="w-full max-w-md mx-auto mb-4">
                   <div className="h-2 bg-primary-100 rounded-full overflow-hidden">
@@ -388,8 +376,8 @@ export default function ResultadoPage() {
             className="space-y-6"
           >
             {/* Comparison Slider */}
-            <div 
-              className="relative w-full mx-auto rounded-2xl overflow-hidden shadow-xl bg-gray-900" 
+            <div
+              className="relative w-full mx-auto rounded-2xl overflow-hidden shadow-xl bg-gray-900"
               style={{ height: 'calc(100vh - 300px)', minHeight: '400px', maxHeight: '700px' }}
             >
               <ImageComparison

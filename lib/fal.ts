@@ -181,17 +181,16 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       ? 'Female subject - keep makeup intact.'
       : ''
 
-  // Prompt final: Bloqueio anatômico total por exceção
+  // Prompt estratégico: Preservação total por exceção
   const prompt = `Raw clinical surgical photograph. ${genderContext}
-ANATOMICAL LOCK: You must keep 100% of the original anatomy FROZEN and UNCHANGED, especially:
-- FACE SHAPE: Precise bone structure, jawline, chin projection, and forehead width.
-- MOUTH AREA: Exact lip position, philtrum length, and corner of the mouth placement.
-- FEATURES: Original eyes, eyelids, gaze, and eyebrows must be pixel-perfect.
-- SKIN & MARKS: Preserve every single original pore, pimple, mole, freckle, and blemish.
-- NO EXPRESSION CHANGE: Maintain the exact same static emotion and facial pose. No smiles.
-ONLY EXCEPTION: Modify ONLY these specific targets: ${promptParts.join('. ')}.
-The requested changes must be implemented with surgical precision on the original face.
-DO NOT beautify, DO NOT smooth, DO NOT alter any area outside the target zones.
+STRICT PRESERVATION RULE: You must keep 100% of the original photograph UNCHANGED, including:
+- FACE STRUCTURE: Jawline, chin shape, face width, and forehead.
+- FEATURES: Exact original eyes, eyelids, gaze, eyebrows, nose shape, and mouth/lips.
+- SKIN DETAILS: Every single original pore, pimple, acne, mole, freckle, and blemish.
+- EXPRESSION: The exact same emotion and facial pose.
+ONLY EXCEPTION: Modify ONLY the following specific areas: ${promptParts.join('. ')}.
+The requested changes must be implemented PRECISELY on the original subject.
+DO NOT beautify, DO NOT smooth skin, DO NOT add smiles.
 High-fidelity clinical realism.`.trim()
 
   return prompt

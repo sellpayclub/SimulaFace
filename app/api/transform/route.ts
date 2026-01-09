@@ -157,6 +157,16 @@ export async function POST(request: NextRequest) {
 
     console.log('fal.ai result:', result)
 
+    // Decrement remaining simulations after successful generation
+    if (result.data.images && result.data.images.length > 0) {
+      await supabase
+        .from('profiles')
+        .update({
+          simulacoes_restantes: Math.max(0, simulacoesRestantes - 1)
+        } as never)
+        .eq('id', user.id)
+    }
+
     return NextResponse.json({
       images: result.data.images,
       prompt,
