@@ -18,7 +18,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
   }
 
   const promptParts: string[] = []
-  
+
   // Descrições mais fortes e diretas para cada ajuste
   const adjustmentDescriptions: Record<string, { low: string; medium: string; high: string }> = {
     // Testa
@@ -32,7 +32,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'softer forehead with reduced lines',
       high: 'very smooth forehead with lines removed'
     },
-    
+
     // Olhos
     'olhos_pe_galinha': {
       low: 'slightly reduced crow\'s feet',
@@ -44,7 +44,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably lifted eyelids, more open eyes',
       high: 'significantly lifted eyelids, very open and alert eyes'
     },
-    
+
     // Nariz
     'nariz_afinar': {
       low: 'slightly slimmer nose',
@@ -66,7 +66,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably wider nose bridge',
       high: 'significantly wider and stronger nose'
     },
-    
+
     // Boca
     'boca_volume': {
       low: 'slightly fuller lips',
@@ -78,7 +78,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably more defined and sculpted lips',
       high: 'very defined lip contour with sharp edges'
     },
-    
+
     // Sulco Nasogeniano
     'sulco_suavizar': {
       low: 'slightly softened nasolabial folds',
@@ -90,7 +90,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably filled and smoother nasolabial area',
       high: 'nasolabial area significantly filled and smooth'
     },
-    
+
     // Maçã do Rosto
     'maca_volume': {
       low: 'slightly enhanced cheekbones',
@@ -102,7 +102,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably sculpted cheekbones',
       high: 'very defined and sculpted cheekbones'
     },
-    
+
     // Queixo
     'queixo_projetar': {
       low: 'slightly more projected chin',
@@ -119,7 +119,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably more defined chin contour',
       high: 'very defined and sculpted chin'
     },
-    
+
     // Mandíbula
     'mandibula_afinar': {
       low: 'slightly slimmer jawline',
@@ -131,7 +131,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably sharper jaw angle',
       high: 'very sharp and defined jaw angle'
     },
-    
+
     // Pescoço
     'pescoco_papada': {
       low: 'slightly reduced double chin',
@@ -143,7 +143,7 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       medium: 'noticeably more defined neck and jawline',
       high: 'very defined neck with clean jawline'
     },
-    
+
     // Bigode
     'bigode_suavizar': {
       low: 'slightly smoother upper lip area',
@@ -175,18 +175,20 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
   })
 
   // Contexto de gênero mais direto
-  const genderContext = gender === 'masculino' 
+  const genderContext = gender === 'masculino'
     ? 'Male subject - keep beard and facial hair intact.'
     : gender === 'feminino'
-    ? 'Female subject - keep makeup intact.'
-    : ''
+      ? 'Female subject - keep makeup intact.'
+      : ''
 
-  // Prompt focado nas mudanças, menos texto de preservação
-  const prompt = `Portrait photo with aesthetic enhancements. ${genderContext}
-
-Apply these changes: ${promptParts.join('. ')}.
-
-Keep same person identity, same hair, same skin tone, same eye color, same clothing, same background. Photorealistic result, natural lighting, no color shifts.`.trim()
+  // Prompt focado nas mudanças, com forte preservação de identidade
+  const prompt = `Highly detailed professional portrait. ${genderContext}
+PRESERVE IDENTITY: It is CRITICAL to keep the EXACT same person, face shape, unique facial features, and personal characteristics. 
+The subject must remain 100% recognizable as the same individual.
+ONLY apply the following aesthetic enhancements: ${promptParts.join('. ')}.
+The result must look like the SAME person after a successful clinical aesthetic procedure.
+DO NOT transform into a different person. Keep same hair, skin texture, skin tone, eye color, clothing, and background. 
+Extreme photorealism, natural clinical lighting, high resolution, no artifacts.`.trim()
 
   return prompt
 }
@@ -197,9 +199,9 @@ export async function processImage(
   adjustments: AdjustmentsState
 ): Promise<{ images: Array<{ url: string }>; prompt: string }> {
   configureFal()
-  
+
   const prompt = buildPrompt(adjustments)
-  
+
   // lora_scale: 0.85 para mudanças mais visíveis mantendo identidade
   const result = await fal.subscribe('fal-ai/flux-2-lora-gallery/face-to-full-portrait', {
     input: {
