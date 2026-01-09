@@ -13,6 +13,30 @@ fal.config({
   credentials: process.env.FAL_KEY!,
 })
 
+// Handle OPTIONS requests for CORS preflight
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'POST, OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+    },
+  })
+}
+
+// Handle GET requests (e.g., health checks from Vercel)
+export async function GET() {
+  return NextResponse.json(
+    {
+      message: 'Transform API endpoint',
+      method: 'POST',
+      description: 'This endpoint processes facial transformation requests',
+    },
+    { status: 200 }
+  )
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Check authentication
