@@ -79,16 +79,7 @@ export function Header({ user }: HeaderProps) {
                 <LogOut className="w-5 h-5" />
               </button>
             </div>
-          ) : (
-            <div className="flex items-center gap-3">
-              <Link href="/login">
-                <Button variant="ghost" size="sm">Entrar</Button>
-              </Link>
-              <Link href="/cadastro">
-                <Button size="sm">Começar Agora</Button>
-              </Link>
-            </div>
-          )}
+          ) : null}
         </div>
 
         {/* Mobile Menu Button */}
@@ -144,16 +135,7 @@ export function Header({ user }: HeaderProps) {
                 Sair
               </button>
             </>
-          ) : (
-            <div className="flex flex-col gap-2 pt-4 border-t border-primary-100">
-              <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button variant="secondary" className="w-full">Entrar</Button>
-              </Link>
-              <Link href="/cadastro" onClick={() => setIsMobileMenuOpen(false)}>
-                <Button className="w-full">Começar Agora</Button>
-              </Link>
-            </div>
-          )}
+          ) : null}
         </div>
       </motion.div>
     </header>
