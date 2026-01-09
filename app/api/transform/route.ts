@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
         enable_safety_checker: true,
         output_format: 'png',
         num_images: 1,
-        lora_scale: 0.80,
+        lora_scale: 0.85,
       },
       logs: true,
       onQueueUpdate: (update) => {

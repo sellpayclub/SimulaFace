@@ -181,15 +181,17 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       ? 'Female subject - keep makeup intact.'
       : ''
 
-  // Prompt focado nas mudanças morfológicas com preservação absoluta das imperfeições originais
-  const prompt = `Raw, unedited professional clinical photograph. ${genderContext}
-MANDATORY PRESERVATION: Keep the original person 100% identical and recognizable. 
-Keep ALL original facial features EXACTLY the same, including every single mole, freckle, acne, spot, scar, and skin blemish. 
-DO NOT touch, remove, or smooth any skin marks unless explicitly instructed in the enhancements below.
-NO BEAUTIFICATION: Disable all automatic skin smoothing or airbrushing. The skin must look real and raw.
-MORPHOLOGICAL CHANGES ONLY: Implement ONLY these changes: ${promptParts.join('. ')}.
-The requested changes must be visible but subtle. Hair, eyes, and background must remain identical.
-High realism, authentic clinical details.`.trim()
+  // Prompt estratégico: Preservação total por exceção
+  const prompt = `Raw clinical surgical photograph. ${genderContext}
+STRICT PRESERVATION RULE: You must keep 100% of the original photograph UNCHANGED, including:
+- FACE STRUCTURE: Jawline, chin shape, face width, and forehead.
+- FEATURES: Exact original eyes, eyelids, gaze, eyebrows, nose shape, and mouth/lips.
+- SKIN DETAILS: Every single original pore, pimple, acne, mole, freckle, and blemish.
+- EXPRESSION: The exact same emotion and facial pose.
+ONLY EXCEPTION: Modify ONLY the following specific areas: ${promptParts.join('. ')}.
+The requested changes must be implemented PRECISELY on the original subject.
+DO NOT beautify, DO NOT smooth skin, DO NOT add smiles.
+High-fidelity clinical realism.`.trim()
 
   return prompt
 }
@@ -213,7 +215,7 @@ export async function processImage(
       enable_safety_checker: true,
       output_format: 'png',
       num_images: 1,
-      lora_scale: 0.80,
+      lora_scale: 0.85,
     },
     logs: true,
     onQueueUpdate: (update) => {
