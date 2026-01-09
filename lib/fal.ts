@@ -187,8 +187,8 @@ PRESERVE IDENTITY: It is CRITICAL to keep the EXACT same person, face shape, uni
 The subject must remain 100% recognizable as the same individual.
 ONLY apply the following aesthetic enhancements: ${promptParts.join('. ')}.
 The result must look like the SAME person after a successful clinical aesthetic procedure.
-DO NOT transform into a different person. Keep same hair, skin texture, skin tone, eye color, clothing, and background. 
-Extreme photorealism, natural clinical lighting, high resolution, no artifacts.`.trim()
+DO NOT transform into a different person. Keep same hair, same natural skin texture and pores, skin tone, eye color, clothing, and background. 
+Extreme photorealism, natural skin details, clinical lighting, high resolution, no artifacts.`.trim()
 
   return prompt
 }
