@@ -4,6 +4,10 @@ import { createClient } from '@/lib/supabase/server'
 import { buildPrompt } from '@/lib/fal'
 import type { AdjustmentsState, Gender } from '@/types'
 
+// Configure runtime for Vercel
+export const runtime = 'nodejs'
+export const maxDuration = 60 // 60 seconds for image processing
+
 // Configure fal client
 fal.config({
   credentials: process.env.FAL_KEY!,

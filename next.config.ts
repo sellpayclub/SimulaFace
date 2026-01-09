@@ -20,6 +20,8 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // Ensure external packages work in server components
+  serverExternalPackages: ['@fal-ai/client'],
 };
 
 export default nextConfig;
