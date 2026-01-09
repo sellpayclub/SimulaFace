@@ -181,16 +181,14 @@ export function buildPrompt(adjustments: AdjustmentsState, gender: Gender = null
       ? 'Female subject - keep makeup intact.'
       : ''
 
-  // Prompt focado nas mudanças, com forte preservação de identidade
-  const prompt = `Highly detailed professional portrait. ${genderContext}
-PRESERVE IDENTITY & TEXTURE: It is CRITICAL to keep the EXACT same person, face shape, and all unique characteristics. 
-The subject must remain 100% recognizable as the same individual.
-KEEP ORIGINAL SKIN: Preserve the exact original skin texture, including all natural imperfections, moles, freckles, unique marks, and pores. 
-DO NOT apply any automatic beautification or skin smoothing filters unless specifically requested in the enhancements.
-ONLY apply the following aesthetic enhancements: ${promptParts.join('. ')}.
-The result must look like the SAME person with their original skin, just after a specific clinical procedure.
-Keep same hair, skin tone, eye color, clothing, and background. 
-Extreme photorealism, authentic skin details, clinical lighting, high resolution.`.trim()
+  // Prompt focado nas mudanças morfológicas com preservação rigorosa da textura original
+  const prompt = `Raw, unedited professional clinical photograph. ${genderContext}
+MANDATORY PRESERVATION: Keep the original person 100% identical and recognizable. 
+Keep the EXACT same original skin texture, maintaining all pores, fine lines, moles, freckles, and natural imperfections.
+NO BEAUTIFICATION: Disable all automatic skin smoothing, airbrushing, or digital retouching. The skin must remain as in the original photo.
+MORPHOLOGICAL CHANGES ONLY: Precisely implement these specific clinical enhancements: ${promptParts.join('. ')}.
+The requested changes must be clearly visible. Hair, eye color, and background must remain unchanged.
+High realism, clinical lighting, authentic details.`.trim()
 
   return prompt
 }
