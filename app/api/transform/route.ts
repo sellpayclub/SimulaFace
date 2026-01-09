@@ -82,7 +82,7 @@ export async function POST(request: NextRequest) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const profileData = profile as any
     const simulacoesRestantes = profileData?.simulacoes_restantes ?? 3
-    
+
     console.log('Simulacoes restantes:', simulacoesRestantes)
 
     if (simulacoesRestantes <= 0) {
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
       const buffer = Buffer.from(base64Data, 'base64')
       const blob = new Blob([buffer], { type: mimeType })
       const file = new File([blob], `face-${Date.now()}.jpg`, { type: mimeType })
-      
+
       processedUrl = await fal.storage.upload(file)
     } else {
       processedUrl = imageUrl
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
         enable_safety_checker: true,
         output_format: 'png',
         num_images: 1,
-        lora_scale: 0.85,
+        lora_scale: 0.80,
       },
       logs: true,
       onQueueUpdate: (update) => {
@@ -163,7 +163,7 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error('Transform error:', error)
-    
+
     // Log full error details for fal.ai validation errors
     if (error && typeof error === 'object') {
       const falError = error as { status?: number; body?: unknown; message?: string }
@@ -171,7 +171,7 @@ export async function POST(request: NextRequest) {
       console.error('Error body:', JSON.stringify(falError.body, null, 2))
       console.error('Error message:', falError.message)
     }
-    
+
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Erro ao processar imagem' },
       { status: 500 }
