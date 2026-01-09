@@ -24,25 +24,36 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      console.log('Attempting login with:', { email })
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
+      console.log('Login response:', { data, error: signInError })
+
       if (signInError) {
+        console.error('Login error:', signInError)
         if (signInError.message.includes('Invalid login credentials')) {
           setError('Email ou senha incorretos.')
         } else {
           setError(signInError.message)
         }
+        setIsLoading(false)
         return
       }
 
-      router.push('/dashboard')
-      router.refresh()
+      if (data?.user) {
+        console.log('Login successful, redirecting...')
+        router.push('/dashboard')
+        router.refresh()
+      } else {
+        setError('Erro ao fazer login. Tente novamente.')
+        setIsLoading(false)
+      }
     } catch (err) {
-      setError('Ocorreu um erro. Tente novamente.')
-    } finally {
+      console.error('Login exception:', err)
+      setError(err instanceof Error ? err.message : 'Ocorreu um erro. Tente novamente.')
       setIsLoading(false)
     }
   }
