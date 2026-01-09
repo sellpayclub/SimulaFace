@@ -21,19 +21,26 @@ export function CameraCapture({ onCapture, onClose, instruction, captureType }: 
   const [error, setError] = useState<string | null>(null)
   const [facingMode, setFacingMode] = useState<'user' | 'environment'>('user')
 
-  const startCamera = useCallback(async () => {
+  const stopStream = useCallback(() => {
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop())
+      setStream(null)
+    }
+  }, [stream])
+
+  const startCamera = useCallback(async (mode: 'user' | 'environment') => {
     try {
       setIsLoading(true)
       setError(null)
 
-      // Stop existing stream if any
+      // Stop existing stream first
       if (stream) {
         stream.getTracks().forEach(track => track.stop())
       }
 
       const mediaStream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode,
+          facingMode: mode,
           width: { ideal: 1280 },
           height: { ideal: 720 },
         },
@@ -44,35 +51,43 @@ export function CameraCapture({ onCapture, onClose, instruction, captureType }: 
 
       if (videoRef.current) {
         videoRef.current.srcObject = mediaStream
-        await videoRef.current.play()
+
+        // Wait for video to be ready before playing
+        videoRef.current.onloadedmetadata = async () => {
+          try {
+            await videoRef.current?.play()
+            setIsLoading(false)
+          } catch (playErr) {
+            console.error('Error playing video:', playErr)
+            setError('Não foi possível iniciar o vídeo. Tente novamente.')
+            setIsLoading(false)
+          }
+        }
       }
     } catch (err) {
       console.error('Error accessing camera:', err)
       setError('Não foi possível acessar a câmera. Verifique as permissões.')
-    } finally {
       setIsLoading(false)
     }
-  }, [facingMode, stream])
+  }, [stream])
 
   useEffect(() => {
-    startCamera()
+    startCamera(facingMode)
 
     return () => {
       if (stream) {
         stream.getTracks().forEach(track => track.stop())
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
-  useEffect(() => {
-    if (!isLoading) {
-      startCamera()
-    }
-  }, [facingMode])
+  const handleSwitchCamera = useCallback(() => {
+    const newMode = facingMode === 'user' ? 'environment' : 'user'
+    setFacingMode(newMode)
+    startCamera(newMode)
+  }, [facingMode, startCamera])
 
-  const switchCamera = () => {
-    setFacingMode(prev => prev === 'user' ? 'environment' : 'user')
-  }
 
   const capture = () => {
     if (!videoRef.current || !canvasRef.current) return
@@ -126,7 +141,7 @@ export function CameraCapture({ onCapture, onClose, instruction, captureType }: 
           </button>
           <span className="text-white font-medium">{instruction}</span>
           <button
-            onClick={switchCamera}
+            onClick={handleSwitchCamera}
             className="p-2 rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors"
           >
             <RotateCcw className="w-6 h-6" />
@@ -145,7 +160,7 @@ export function CameraCapture({ onCapture, onClose, instruction, captureType }: 
           <div className="flex flex-col items-center gap-4 text-white p-8 text-center">
             <Camera className="w-16 h-16 opacity-50" />
             <p>{error}</p>
-            <Button onClick={startCamera} variant="secondary">
+            <Button onClick={() => startCamera(facingMode)} variant="secondary">
               Tentar Novamente
             </Button>
           </div>
@@ -162,9 +177,8 @@ export function CameraCapture({ onCapture, onClose, instruction, captureType }: 
               autoPlay
               playsInline
               muted
-              className={`max-w-full max-h-full object-contain ${
-                facingMode === 'user' ? 'scale-x-[-1]' : ''
-              }`}
+              className={`max-w-full max-h-full object-contain ${facingMode === 'user' ? 'scale-x-[-1]' : ''
+                }`}
             />
             {/* Face guide overlay */}
             <div className="camera-guide">
