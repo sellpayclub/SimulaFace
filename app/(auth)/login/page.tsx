@@ -11,7 +11,7 @@ import { Button, Card, Input } from '@/components/ui'
 export default function LoginPage() {
   const router = useRouter()
   const supabase = createClient()
-  
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
@@ -45,8 +45,10 @@ export default function LoginPage() {
 
       if (data?.user) {
         console.log('Login successful, redirecting...')
-        router.push('/dashboard')
-        router.refresh()
+        // Use window.location for full page navigation so server-side
+        // can read the updated auth cookies properly
+        window.location.href = '/dashboard'
+        return
       } else {
         setError('Erro ao fazer login. Tente novamente.')
         setIsLoading(false)
